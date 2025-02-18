@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('driver_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('city_id')->constrained()->onDelete('cascade');
             $table->string('status')->default('pending');
             $table->timestamp('assigned_at')->nullable();
             $table->timestamps();
