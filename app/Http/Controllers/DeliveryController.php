@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Delivery;
 use App\Http\Resources\DeliveryResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class DeliveryController extends Controller
 {
@@ -61,5 +63,35 @@ class DeliveryController extends Controller
     {
         $deliveries = Delivery::all();
         return DeliveryResource::collection($deliveries);
+    }
+
+    // Assign Drivers with Minimal Load - We need to assign drivers based on who has the least deliveries.
+    public function assignDelivery(Request $request)
+    {
+        $validated = $request->validate([
+            'city_id' => 'required|exists:cities,id',
+        ]);
+
+        // Find the driver with the least deliveries in the city
+        $driver = User::role('driver')
+            ->whereHas('deliveries', function ($query) use ($validated) {
+                $query->where('city_id', $validated['city_id']);
+            })
+            ->withCount('deliveries')
+            ->orderBy('deliveries_count', 'asc')
+            ->first();
+
+        if (!$driver) {
+            return response()->json(['error' => 'No drivers available'], 400);
+        }
+
+        $delivery = Delivery::create([
+            'driver_id' => $driver->id,
+            'city_id' => $validated['city_id'],
+            'status' => 'pending',
+            'assigned_at' => now(),
+        ]);
+
+        return new DeliveryResource($delivery);
     }
 }

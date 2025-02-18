@@ -20,7 +20,12 @@ class Delivery extends Model
     }
 
     public function city()
-{
-    return $this->belongsTo(City::class);
-}
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
 }
