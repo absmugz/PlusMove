@@ -76,3 +76,14 @@ PUSHER_APP_KEY=your-app-key
 PUSHER_APP_SECRET=your-app-secret
 PUSHER_APP_CLUSTER=your-cluster
 ```
+
+FE
+
+```
+ npm install && npm run build
+ ```
+
+Run App
+```
+composer run dev
+ ```
