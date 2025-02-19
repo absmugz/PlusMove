@@ -7,6 +7,7 @@ use App\Models\Delivery;
 use App\Http\Resources\DeliveryResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\DeliveryUpdated;
 
 
 class DeliveryController extends Controller
@@ -45,7 +46,6 @@ class DeliveryController extends Controller
 }
 
     
-
     // Update delivery status
     public function update(Request $request, $id)
     {
@@ -55,6 +55,9 @@ class DeliveryController extends Controller
 
         $delivery = Delivery::findOrFail($id);
         $delivery->update(['status' => $validated['status']]);
+
+        // Fire the event to broadcast the update
+        broadcast(new DeliveryUpdated($delivery))->toOthers();
 
         return new DeliveryResource($delivery);
     }
