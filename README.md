@@ -1,54 +1,78 @@
-## PLUS MOVE
+## PLUS MOVE API
 
-Laravel-based solution for a delivery company to manage and streamline the
-process of tracking deliveries.
+A powerful **delivery management API** built with Laravel 11, featuring **real-time tracking using Pusher**, authentication with Sanctum, role-based access with Spatie, and Coming soon API documentation with Swagger.
 
 ## API Design and Documentation
 
-- Middleware & Controller-Based Role Checking
-- Restricts Admins to Assign Deliveries
-- Restricts Drivers to Update Deliveries
-- Restricts Customers to View Deliveries
-- Secures API Endpoints
+🛡️ Security & Role-Based Access
+Middleware & Controller-Based Role Checking
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Role-based access is enforced at both middleware and controller levels.
+Only authorized users can perform specific actions, ensuring a secure API.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+👤 User Role Restrictions
+Role	Permissions
+Admin	- Can assign deliveries to drivers
+- Can delete deliveries
+- Can view all deliveries
+Driver	- Can update delivery status
+- Can track their assigned deliveries
+Customer	- Can only view their own deliveries
+- Cannot modify delivery data
+🔒 API Security & Authentication
+Laravel Sanctum is used for token-based authentication.
+All API routes require authentication (auth:sanctum middleware).
+JWT/Bearer Tokens are used to authenticate requests.
+Role-based middleware (role:admin, role:driver, role:customer) restricts access to specific endpoints.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## **📌 Prerequisites**
+Before running this project, ensure you have:
+- **PHP 8.2+**
+- **Composer**
+- **Node.js (for frontend)**
+- **MySQL**
+- **Pusher Account** (for real-time tracking)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## **⚙️ Installation**
+### **1️⃣ Clone the Repository**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+git clone https://github.com/absmugz/PlusMove
+cd PlusMove
 
-## Contributing
+Install Dependencies
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+composer install
+```
 
-## Code of Conduct
+Copy .env File & Set Up Configuration
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Then update the .env file with your database and Pusher credentials:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+APP_NAME=PlusMove
+APP_ENV=local
+APP_KEY=base64:YOUR_APP_KEY
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
 
-## License
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=plus_move
+DB_USERNAME=root
+DB_PASSWORD=
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+BROADCAST_DRIVER=pusher
+PUSHER_APP_ID=your-app-id
+PUSHER_APP_KEY=your-app-key
+PUSHER_APP_SECRET=your-app-secret
+PUSHER_APP_CLUSTER=your-cluster
+```

@@ -7,6 +7,7 @@ use App\Models\Delivery;
 use App\Http\Resources\DeliveryResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\DeliveryUpdated;
 
 
 class DeliveryController extends Controller
@@ -45,16 +46,21 @@ class DeliveryController extends Controller
 }
 
     
-
     // Update delivery status
+    
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'status' => 'required|string|in:in-transit,delivered,returned',
+            'latitude' => 'nullable|numeric', // Allow GPS coordinates
+            'longitude' => 'nullable|numeric',
         ]);
 
         $delivery = Delivery::findOrFail($id);
-        $delivery->update(['status' => $validated['status']]);
+        $delivery->update($validated);
+
+        // Fire event with location update
+        broadcast(new DeliveryUpdated($delivery))->toOthers();
 
         return new DeliveryResource($delivery);
     }
