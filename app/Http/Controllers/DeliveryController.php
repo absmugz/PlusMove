@@ -47,16 +47,19 @@ class DeliveryController extends Controller
 
     
     // Update delivery status
+    
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'status' => 'required|string|in:in-transit,delivered,returned',
+            'latitude' => 'nullable|numeric', // Allow GPS coordinates
+            'longitude' => 'nullable|numeric',
         ]);
 
         $delivery = Delivery::findOrFail($id);
-        $delivery->update(['status' => $validated['status']]);
+        $delivery->update($validated);
 
-        // Fire the event to broadcast the update
+        // Fire event with location update
         broadcast(new DeliveryUpdated($delivery))->toOthers();
 
         return new DeliveryResource($delivery);

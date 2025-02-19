@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('driver_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('city_id')->constrained()->onDelete('cascade');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->string('status')->default('pending');
             $table->timestamp('assigned_at')->nullable();
             $table->timestamps();
