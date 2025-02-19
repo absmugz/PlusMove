@@ -25,20 +25,24 @@ class DeliveryController extends Controller
 
     // Create a new delivery
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'driver_id' => 'required|exists:users,id',
-            'status' => 'required|string',
-        ]);
+{
+    // Validate request inputs
+    $validated = $request->validate([
+        'driver_id' => 'required|exists:users,id',
+        'city_id' => 'required|exists:cities,id',
+        'status' => 'required|string|in:pending,in-transit,delivered,returned',
+    ]);
 
-        $delivery = Delivery::create([
-            'driver_id' => $validated['driver_id'],
-            'status' => $validated['status'],
-            'assigned_at' => now(),
-        ]);
+    // Create new delivery
+    $delivery = Delivery::create([
+        'driver_id' => $validated['driver_id'],
+        'city_id' => $validated['city_id'],
+        'status' => $validated['status'],
+        'assigned_at' => now(),
+    ]);
 
-        return new DeliveryResource($delivery);
-    }
+    return new DeliveryResource($delivery);
+}
 
     
 
@@ -71,6 +75,8 @@ class DeliveryController extends Controller
             'city_id' => 'required|exists:cities,id',
         ]);
 
+        // return response()->json(['validated' => $validated['city_id']], 400);
+
         // Find driver with the least deliveries in the city
         $driver = User::role('driver')
             ->whereHas('deliveries', function ($query) use ($validated) {
@@ -79,7 +85,7 @@ class DeliveryController extends Controller
             ->withCount('deliveries')
             ->orderBy('deliveries_count', 'asc')
             ->first();
-
+            
         if (!$driver) {
             return response()->json(['error' => 'No drivers available'], 400);
         }

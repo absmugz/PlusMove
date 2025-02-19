@@ -9,7 +9,7 @@ class Delivery extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['driver_id', 'status', 'assigned_at'];
+    protected $fillable = ['driver_id', 'status', 'assigned_at', 'city_id'];
 
     /**
      * Define the relationship with the driver (User model)
